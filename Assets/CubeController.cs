@@ -22,6 +22,8 @@ public class CubeController : MonoBehaviour
     public float maxSpeed = 0;
     public float jumpForce = 0;
 
+    public float distanceFromStart = 0;
+
     public bool isGrounded = false;
 
     Rigidbody rb;
@@ -39,11 +41,6 @@ public class CubeController : MonoBehaviour
 
         InitializeChromosome();
 
-        print(chromosome[chromosomeIndex].pressTime);
-        print(chromosome[chromosomeIndex].inputPairs[(int)KeyCode.RightArrow]);
-        print(chromosome[chromosomeIndex].inputPairs[(int)KeyCode.LeftArrow]);
-        print(chromosome[chromosomeIndex].inputPairs[(int)KeyCode.Space]);
-
         overlapSphereRadius = mf.mesh.bounds.extents.x + 0.1f;
 
         timeLimit = Time.time;
@@ -54,11 +51,25 @@ public class CubeController : MonoBehaviour
         for (int i = 0; i < chromosomeLength; i++)
         {
             Gene gene = new Gene();
-            Dictionary<int, bool> inputPairs = new Dictionary<int, bool>();
-            foreach (int keyCodes in possibleInputs)
+            Dictionary<int, bool> inputPairs;
+            if (i == 0)
             {
-                inputPairs[keyCodes] = false;
+                inputPairs = new Dictionary<int, bool>();
+                foreach (int keyCodes in possibleInputs)
+                {
+                    inputPairs[keyCodes] = false;
+                }
             }
+            else
+            {
+                inputPairs = new Dictionary<int, bool>();
+                foreach (int keyCodes in possibleInputs)
+                {
+                    inputPairs[keyCodes] = chromosome[i - 1].inputPairs[keyCodes];
+                }
+            }
+
+            
 
             int input = possibleInputs[TryRandomInput()];
             inputPairs[input] = !inputPairs[input];
@@ -74,6 +85,11 @@ public class CubeController : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, overlapSphereRadius);
+    }
+
+    void Update()
+    {
+        distanceFromStart = Vector3.Distance(transform.position, new Vector3(0, 0.5f, 0));
     }
 
     void FixedUpdate()
@@ -100,16 +116,15 @@ public class CubeController : MonoBehaviour
         if (Time.time - timeLimit <= chromosome[chromosomeIndex].pressTime)
         {
             RunInputs();
+        }
+        else
+        {
+            timeLimit = Time.time;
 
             if (chromosomeIndex + 1 != chromosome.Count)
             {
                 chromosomeIndex++;
             }
-            //return;
-        }
-        else
-        {
-            timeLimit = Time.time;
         }
     }
 
@@ -123,23 +138,21 @@ public class CubeController : MonoBehaviour
                 {
                     case (int)KeyCode.RightArrow:
                         MoveRight();
-                        print("Right.");
+                        //print("Right.");
                         break;
                     case (int)KeyCode.LeftArrow:
                         MoveLeft();
-                        print("Left.");
+                        //print("Left.");
                         break;
                     case (int)KeyCode.Space:
                         if (isGrounded)
                         {
                             Jump();
-                            print("Jump.");
+                            //print("Jump.");
                         }
                         chromosome[chromosomeIndex].inputPairs[possibleInputs[i]] = !chromosome[chromosomeIndex].inputPairs[possibleInputs[i]];
                         break;
                 }
-
-                timeLimit = Time.time;
             }
         }
     }
