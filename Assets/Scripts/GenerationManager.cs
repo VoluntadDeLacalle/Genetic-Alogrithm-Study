@@ -294,6 +294,13 @@ public class GenerationManager : MonoBehaviour
 
     void Update()
     {
-        DecreaseTimer();
+        if (!goalReached)
+        {
+            DecreaseTimer();
+        }
+        else
+        {
+            Debug.Log($"Simulation over! Generation: {currentGeneration}");
+        }
     }
 }

@@ -149,7 +149,7 @@ public class CubeController : MonoBehaviour
 
     void CheckInputTimes()
     {
-        if (!GenerationManager.instance.timeLimitReached)
+        if (!GenerationManager.instance.timeLimitReached && !GenerationManager.instance.goalReached)
         {
             if (Time.time - timeLimit <= chromosome[chromosomeIndex].pressTime)
             {
