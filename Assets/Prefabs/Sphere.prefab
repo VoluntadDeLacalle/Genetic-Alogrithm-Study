@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4308148704808408174}
   - component: {fileID: 4308148704808408170}
   - component: {fileID: 4308148704808408171}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sphere
   m_TagString: Sphere
   m_Icon: {fileID: 0}
@@ -123,10 +123,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b107fcedc982cd744b7988744e548a98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chromosomeLength: 10
   timeLimit: 0
   timeBuffer: 2
   speed: 300
   maxSpeed: 10
   jumpForce: 10
+  distanceFromStart: 0
   isGrounded: 1
