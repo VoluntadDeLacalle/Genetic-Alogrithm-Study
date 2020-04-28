@@ -1756,29 +1756,6 @@ Transform:
   m_Father: {fileID: 860698431}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1485487516 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 863736380792949036, guid: 9fa2aa69bce4a3948a1a4df867955d67,
-    type: 3}
-  m_PrefabInstance: {fileID: 863736379307488432}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1485487517
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1485487516}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b789cc9a9f099cb47977a713fbbe1d1e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pooledAmount: 20
-  willGrow: 0
-  key: 0
-  pooledObject: {fileID: 4308148704808408173, guid: 4615f57de607d53459018bf1fc60f1fd,
-    type: 3}
 --- !u!1 &1575422598
 GameObject:
   m_ObjectHideFlags: 0
@@ -2534,21 +2511,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GenerationManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 863736380792949037, guid: 9fa2aa69bce4a3948a1a4df867955d67,
-        type: 3}
-      propertyPath: mutationPercentage
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 863736380792949037, guid: 9fa2aa69bce4a3948a1a4df867955d67,
-        type: 3}
-      propertyPath: timeScale
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 863736380792949037, guid: 9fa2aa69bce4a3948a1a4df867955d67,
-        type: 3}
-      propertyPath: popLifeSpanInMin
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 863736380792949038, guid: 9fa2aa69bce4a3948a1a4df867955d67,
         type: 3}

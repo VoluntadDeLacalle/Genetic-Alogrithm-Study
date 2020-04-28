@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 863736380792949038}
   - component: {fileID: 863736380792949037}
   - component: {fileID: 863736380792949039}
+  - component: {fileID: 1485487517}
   m_Layer: 0
   m_Name: GenerationManager
   m_TagString: Untagged
@@ -44,8 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2547293a06b158b4ba5338dc1d66d079, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popLifeSpanInMin: 0.5
-  timeScale: 5
+  popLifeSpanInMin: 2
+  timeScale: 50
   timeLimitReached: 0
   popLifeSpan: 0
   currentGeneration: 1
@@ -73,3 +74,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c125d2b40d70dbc4ea01ce8d40b6db56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1485487517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 863736380792949036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b789cc9a9f099cb47977a713fbbe1d1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pooledAmount: 20
+  willGrow: 0
+  key: 0
+  pooledObject: {fileID: 4308148704808408173, guid: 4615f57de607d53459018bf1fc60f1fd,
+    type: 3}
