@@ -7,14 +7,19 @@ public class GenerationManager : MonoBehaviour
     public static GenerationManager instance = null;
 
     public float popLifeSpanInMin = 0;
-    public float timeScale = 1;
-    public bool timeLimitReached = false;
     [HideInInspector]
     public float popLifeSpan = 0;
+    public int populationAmount = 0;
+    [HideInInspector]
+    public List<GameObject> currentPopulation;
+    [HideInInspector]
+    public List<GameObject> newPopulation;
+
+    public float timeScale = 1;
+    [HideInInspector]
+    public bool timeLimitReached = false;
     public int currentGeneration = 1;
     public bool goalReached = false;
-    [HideInInspector]
-    public Vector3 populationStartingPosition = new Vector3(0, 0.5f, 0);
 
     [HideInInspector]
     public int fittestIndex = 0;
@@ -22,22 +27,22 @@ public class GenerationManager : MonoBehaviour
     public int secondFittestIndex = 0;
     [HideInInspector]
     public int leastFittestIndex = 0;
+    private int eliteIndex = 0;
 
-    public int populationAmount = 0;
-    public List<GameObject> currentPopulation;
-    public List<GameObject> newPopulation;
 
+    public int tourneySelectNumb = 3;
     [Range(0, 1)]
     public float mutationPercentAcrossChromosome = 0;
-
     [Range(0,1)]
     public float mutationChanceRate = 0;
-
     public float maxGeneDurationTime = 0;
 
     [HideInInspector]
     public int[] possibleInputs;
     private List<Gene> offspringChromosome;
+
+    [HideInInspector]
+    public Vector3 populationStartingPosition = new Vector3(0, 0.5f, 0);
 
     void Awake()
     {
@@ -50,9 +55,14 @@ public class GenerationManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        if (populationAmount < 2)
+        if (populationAmount < 3)
         {
-            populationAmount = 2;
+            populationAmount = 3;
+        }
+
+        if (tourneySelectNumb < 3)
+        {
+            tourneySelectNumb = 3;
         }
 
         offspringChromosome = new List<Gene>();
@@ -79,10 +89,13 @@ public class GenerationManager : MonoBehaviour
 
     void NextGeneration()
     {
+        newPopulation.Clear();
         for (int i = 0; i < currentPopulation.Count; i++)
         {
             newPopulation.Add(currentPopulation[i]);
         }
+
+        eliteIndex = FindFittestSubject();
 
         for (int i = 0; i < (currentPopulation.Count / 2); i++)
         {
@@ -125,13 +138,13 @@ public class GenerationManager : MonoBehaviour
 
     public int FindFittestSubject()
     {
-        float maxValue = currentPopulation[0].GetComponent<CubeController>().distanceFromStart;
+        float maxValue = newPopulation[0].GetComponent<CubeController>().distanceFromStart;
         int maxIndex = 0;
-        for (int i = 0; i < currentPopulation.Count; i++)
+        for (int i = 0; i < newPopulation.Count; i++)
         {
-            if (maxValue <= currentPopulation[i].GetComponent<CubeController>().distanceFromStart && currentPopulation[i].GetComponent<CubeController>().transform.position.x >= 0)
+            if (maxValue < newPopulation[i].GetComponent<CubeController>().distanceFromStart)
             {
-                maxValue = currentPopulation[i].GetComponent<CubeController>().distanceFromStart;
+                maxValue = newPopulation[i].GetComponent<CubeController>().distanceFromStart;
                 maxIndex = i;
             }
         }
@@ -139,52 +152,38 @@ public class GenerationManager : MonoBehaviour
         return maxIndex;
     }
 
-    void FindLeastFitSubject()
+    int GetFitIndex(int numbOfChallengers)
     {
-        float minValue = newPopulation[0].GetComponent<CubeController>().distanceFromStart;
-        int minIndex = 0;
-        for (int i = 0; i < newPopulation.Count; i++)
+        List<int> tournament = new List<int>();
+
+        for (int i = 0; i < numbOfChallengers; i++)
         {
-            if (minValue >= newPopulation[i].GetComponent<CubeController>().distanceFromStart)
+            int randIndex = Random.Range(0, currentPopulation.Count);
+            while (tournament.Contains(randIndex))
             {
-                minValue = newPopulation[i].GetComponent<CubeController>().distanceFromStart;
-                minIndex = i;
+                randIndex = Random.Range(0, currentPopulation.Count);
+            }
+            tournament.Add(randIndex);
+        }
+
+        float maxValue = currentPopulation[tournament[0]].GetComponent<CubeController>().distanceFromStart;
+        int maxIndex = 0;
+        for (int i = 0; i < tournament.Count; i++)
+        {
+            if (maxValue < currentPopulation[tournament[i]].GetComponent<CubeController>().distanceFromStart)
+            {
+                maxValue = currentPopulation[tournament[i]].GetComponent<CubeController>().distanceFromStart;
+                maxIndex = tournament[i];
             }
         }
 
-        leastFittestIndex = minIndex;
-    }
-
-    int GetFitIndex(float randPoint)
-    {
-        float rouletteBall = 0;
-        for (int i = 0; i < currentPopulation.Count; i++)
-        {
-            rouletteBall += currentPopulation[i].GetComponent<CubeController>().distanceFromStart;
-            if (rouletteBall > randPoint)
-            {
-                return i;
-            }
-        }
-
-        return 0;
+        return maxIndex;
     }
 
     void Selection()
     {
-        float sum = 0;
-        for (int i = 0; i < currentPopulation.Count; i++)
-        {
-            sum += currentPopulation[i].GetComponent<CubeController>().distanceFromStart;
-        }
-
-        float rand1 = Random.Range(0, sum);
-        fittestIndex = GetFitIndex(rand1);
-
-        float rand2 = Random.Range(0, sum);
-        secondFittestIndex = GetFitIndex(rand2);
-
-        FindLeastFitSubject();
+        fittestIndex = GetFitIndex(tourneySelectNumb);
+        secondFittestIndex = GetFitIndex(tourneySelectNumb);
     }
 
     void Crossover()
@@ -195,16 +194,14 @@ public class GenerationManager : MonoBehaviour
 
         int rand = Random.Range(0, smallestChromosomeCount);
 
-        for (int i = 0; i < smallestChromosomeCount; i++)
+        for (int i = 0; i < rand; i++)
         {
-            if (i < rand)
-            {
-                offspringChromosome.Add(newPopulation[fittestIndex].GetComponent<CubeController>().chromosome[i]);
-            }
-            else
-            {
-                offspringChromosome.Add(newPopulation[secondFittestIndex].GetComponent<CubeController>().chromosome[i]);
-            }
+            offspringChromosome.Add(newPopulation[fittestIndex].GetComponent<CubeController>().chromosome[i].DeepClone());
+        }
+
+        for (int i = rand; i < chromosomeCount2 - rand; i++)
+        {
+            offspringChromosome.Add(newPopulation[secondFittestIndex].GetComponent<CubeController>().chromosome[i].DeepClone());
         }
     }
 
@@ -253,6 +250,7 @@ public class GenerationManager : MonoBehaviour
             }
         }
 
+        mutatedIndices.Clear();
         float pressTimesSum = 0;
         for (int i = 0; i <offspringChromosome.Count; i++)
         {
@@ -268,6 +266,11 @@ public class GenerationManager : MonoBehaviour
     void AddToPopulation()
     {
         int rand = Random.Range(0, newPopulation.Count);
+        while (rand == eliteIndex)
+        {
+            rand = Random.Range(0, newPopulation.Count);
+        }
+
         int chromosomeCount1 = newPopulation[rand].GetComponent<CubeController>().chromosome.Count;
         int chromosomeCount2 = offspringChromosome.Count;
 

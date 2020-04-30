@@ -46,22 +46,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   popLifeSpanInMin: 2
-  timeScale: 50
-  timeLimitReached: 0
   popLifeSpan: 0
+  populationAmount: 50
+  currentPopulation: []
+  newPopulation: []
+  timeScale: 20
+  timeLimitReached: 0
   currentGeneration: 1
   goalReached: 0
-  populationStartingPosition: {x: 0, y: 0.5, z: 0}
   fittestIndex: 0
   secondFittestIndex: 0
   leastFittestIndex: 0
-  populationAmount: 20
-  currentPopulation: []
-  newPopulation: []
   mutationPercentAcrossChromosome: 1
   mutationChanceRate: 0.05
   maxGeneDurationTime: 5
   possibleInputs: 
+  populationStartingPosition: {x: 0, y: 0.5, z: 0}
 --- !u!114 &863736380792949039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,8 +86,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b789cc9a9f099cb47977a713fbbe1d1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pooledAmount: 20
-  willGrow: 0
   key: 0
   pooledObject: {fileID: 4308148704808408173, guid: 4615f57de607d53459018bf1fc60f1fd,
     type: 3}

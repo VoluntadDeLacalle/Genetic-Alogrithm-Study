@@ -4,6 +4,18 @@ using UnityEngine;
 
 public class Gene
 {
+
+    public Gene DeepClone()
+    {
+        var clonedObj = new Gene()
+        {
+            inputPairs = new Dictionary<int, bool>(this.inputPairs),
+            pressTime = this.pressTime,
+        };
+
+        return clonedObj;
+    }
+
     public Dictionary<int, bool> inputPairs;
     public float pressTime;
 }

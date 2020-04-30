@@ -5,8 +5,8 @@ using UnityEngine;
 public class ObjectPooler : MonoBehaviour
 {
     public static ObjectPooler current;
-    public int pooledAmount = 20;
-    public bool willGrow = true;
+    private int pooledAmount = 20;
+    private bool willGrow = true;
 
     private int count = 1;
 
@@ -27,6 +27,9 @@ public class ObjectPooler : MonoBehaviour
     void Start()
     {
         dict[key] = this;
+
+        pooledAmount = GenerationManager.instance.populationAmount;
+        willGrow = true;
 
         pooledObjects = new List<GameObject>();
         for (int i = 0; i < pooledAmount; i++)
