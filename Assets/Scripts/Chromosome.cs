@@ -24,10 +24,70 @@ public class Chromosome
     public List<Gene> genes;
     static int fittestIndex = 0;
     static int secondFittestIndex = 0;
+    static private int[] possibleInputs;
 
     public Chromosome()
     {
         genes = new List<Gene>();
+        possibleInputs = GenerationManager.instance.possibleInputs;
+    }
+
+    static private int AddRandomInput()
+    {
+        int rand = Random.Range(0, possibleInputs.Length);
+        return rand;
+    }
+
+    public void InitializeChromosome()
+    {
+        Gene gene = new Gene();
+        Dictionary<int, bool> inputPairs;
+        inputPairs = new Dictionary<int, bool>();
+        foreach (int keyCodes in possibleInputs)
+        {
+            inputPairs[keyCodes] = false;
+        }
+
+        int input = possibleInputs[AddRandomInput()];
+        inputPairs[input] = !inputPairs[input];
+
+        gene.inputPairs = inputPairs;
+        gene.pressTime = Random.Range(1, GenerationManager.instance.maxGeneDurationTime);
+
+        genes.Add(gene);
+    }
+
+    public void AddGene(ref bool lastGeneAdded)
+    {
+        Gene gene = new Gene();
+        Dictionary<int, bool> inputPairs;
+
+        inputPairs = new Dictionary<int, bool>();
+        foreach (int keyCodes in possibleInputs)
+        {
+            inputPairs[keyCodes] = genes[genes.Count - 1].inputPairs[keyCodes];
+
+            if (keyCodes == (int)KeyCode.Space && inputPairs[keyCodes])
+            {
+                inputPairs[keyCodes] = false;
+            }
+
+        }
+
+        int input = possibleInputs[AddRandomInput()];
+        inputPairs[input] = !inputPairs[input];
+
+        gene.inputPairs = inputPairs;
+        gene.pressTime = Random.Range(1, GenerationManager.instance.maxGeneDurationTime);
+
+        if (GenerationManager.instance.popLifeSpan - GenerationManager.instance.maxGeneDurationTime < 0)
+        {
+            GenerationManager.instance.maxGeneDurationTime = GenerationManager.instance.popLifeSpan;
+            lastGeneAdded = true;
+            Debug.Log("Last Gene added.");
+        }
+
+        genes.Add(gene);
     }
 
     static public int FindFittestSubject(List<GameObject> newPopulation)
@@ -126,7 +186,7 @@ public class Chromosome
                     randIndex = Random.Range(0, offspringChromosome.genes.Count);
                 }
 
-                int input = GenerationManager.instance.possibleInputs[GenerationManager.instance.AddRandomInput()];
+                int input = possibleInputs[AddRandomInput()];
                 offspringChromosome.genes[randIndex].inputPairs[input] = !offspringChromosome.genes[randIndex].inputPairs[input];
 
                 mutatedIndices.Add(randIndex);
@@ -137,6 +197,7 @@ public class Chromosome
         rand = Random.Range(0, 101);
         if (rand < (GenerationManager.instance.mutationChanceRate * 100))
         {
+            Debug.Log("Mutated.");
             for (int i = 0; i < mutationCount; i++)
             {
                 int randIndex = Random.Range(0, offspringChromosome.genes.Count);
@@ -144,8 +205,6 @@ public class Chromosome
                 {
                     randIndex = Random.Range(0, offspringChromosome.genes.Count);
                 }
-
-                int input = GenerationManager.instance.possibleInputs[GenerationManager.instance.AddRandomInput()];
 
                 offspringChromosome.genes[randIndex].pressTime = Random.Range(1, GenerationManager.instance.maxGeneDurationTime);
 

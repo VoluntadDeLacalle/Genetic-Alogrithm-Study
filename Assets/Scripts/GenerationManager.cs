@@ -5,21 +5,30 @@ public class GenerationManager : MonoBehaviour
 {
     public static GenerationManager instance = null;
 
+    [Tooltip("Current Population's Life Span in Minutes")]
     [Range(1, 5)]
     public float popLifeSpanInMin = 0;
+    [Tooltip("The current Population size")]
     [Range(10, 200)]
     public int populationAmount = 0;
 
+    [Tooltip("Scales the time of the program\n\n" +
+             "Ex. timeScale = 2 -> 2x faster\n\n" +
+             "WARNING: A high time scale and big population may lag the renderering of the program")]
     [Range(1, 20)]
     public float timeScale = 1;
+    [Tooltip("Determines the amount of contestants allowed to be tried in the Tourney Selection")]
     [Range(3, 6)]
     public int tourneySelectNumb = 3;
 
-    [Range(0, 1)]
-    public float mutationPercentAcrossChromosome = 0;
+    [Tooltip("Determines if an offspring's Chromosome is mutated or not\n(1 = 100%)")]
     [Range(0,1)]
     public float mutationChanceRate = 0;
- 
+    [Tooltip("Determines what percentage of the offspring's chromosome is mutated\n(1 = 100%)")]
+    [Range(0, 1)]
+    public float mutationPercentAcrossChromosome = 0;
+
+
     [HideInInspector]
     public Vector3 populationStartingPosition = new Vector3(0, 0.5f, 0);
     [HideInInspector]
@@ -50,6 +59,7 @@ public class GenerationManager : MonoBehaviour
     public float maxGeneDurationTime = 0;
     [HideInInspector]
     public int[] possibleInputs;
+
 
     private ObjectPooler.Key agentKey = ObjectPooler.Key.Agent;
     private Chromosome offspringChromosome;
@@ -151,12 +161,6 @@ public class GenerationManager : MonoBehaviour
             agent.SetActive(true);
         }
 
-    }
-
-    public int AddRandomInput()
-    {
-        int rand = Random.Range(0, possibleInputs.Length);
-        return rand;
     }
 
     void Update()

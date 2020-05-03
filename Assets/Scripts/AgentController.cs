@@ -4,7 +4,6 @@ using UnityEngine;
 public class AgentController : MonoBehaviour
 {
     public Chromosome chromosome;
-
     private int chromosomeIndex = 0;
 
     public float timeLimit = 0;
@@ -31,8 +30,7 @@ public class AgentController : MonoBehaviour
         mf = GetComponent<MeshFilter>();
 
         chromosome = new Chromosome();
-
-        InitializeChromosome();
+        chromosome.InitializeChromosome();
 
         overlapSphereRadius = mf.mesh.bounds.extents.x - 0.01f;
 
@@ -56,58 +54,6 @@ public class AgentController : MonoBehaviour
     void OnDisable()
     {
         distanceFromStart = 0;
-    }
-    
-    void InitializeChromosome()
-    {
-        Gene gene = new Gene();
-        Dictionary<int, bool> inputPairs;
-        inputPairs = new Dictionary<int, bool>();
-        foreach (int keyCodes in GenerationManager.instance.possibleInputs)
-        {
-            inputPairs[keyCodes] = false;
-        }
-
-        int input = GenerationManager.instance.possibleInputs[GenerationManager.instance.AddRandomInput()];
-        inputPairs[input] = !inputPairs[input];
-
-        gene.inputPairs = inputPairs;
-        gene.pressTime = Random.Range(1, GenerationManager.instance.maxGeneDurationTime);
-
-        chromosome.genes.Add(gene);
-    }
-
-    void AddGene()
-    {
-        Gene gene = new Gene();
-        Dictionary<int, bool> inputPairs;
-
-        inputPairs = new Dictionary<int, bool>();
-        foreach (int keyCodes in GenerationManager.instance.possibleInputs)
-        {
-            inputPairs[keyCodes] = chromosome.genes[chromosome.genes.Count - 1].inputPairs[keyCodes];
-
-            if (keyCodes == (int)KeyCode.Space && inputPairs[keyCodes])
-            {
-                inputPairs[keyCodes] = false;
-            }
-
-        }
-
-        int input = GenerationManager.instance.possibleInputs[GenerationManager.instance.AddRandomInput()];
-        inputPairs[input] = !inputPairs[input];
-
-        gene.inputPairs = inputPairs;
-        gene.pressTime = Random.Range(1, GenerationManager.instance.maxGeneDurationTime);
-
-        if (GenerationManager.instance.popLifeSpan - GenerationManager.instance.maxGeneDurationTime < 0)
-        {
-            GenerationManager.instance.maxGeneDurationTime = GenerationManager.instance.popLifeSpan;
-            lastGeneAdded = true;
-            Debug.Log("Last Gene added.");
-        }
-
-        chromosome.genes.Add(gene);
     }
 
     void OnDrawGizmos()
@@ -151,7 +97,7 @@ public class AgentController : MonoBehaviour
             {
                 if (!lastGeneAdded)
                 {
-                    AddGene();
+                    chromosome.AddGene(ref lastGeneAdded);
                 }
 
                 timeLimit = Time.time;
@@ -174,13 +120,11 @@ public class AgentController : MonoBehaviour
                 {
                     case (int)KeyCode.RightArrow:
                         MoveRight();
-                        //print("Right.");
                         break;
                     case (int)KeyCode.Space:
                         if (isGrounded && !hasJumped)
                         {
                             Jump();
-                            //print("Jump.");
                             hasJumped = true;
                         }
                         break;
