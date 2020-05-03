@@ -90,15 +90,15 @@ public class Chromosome
         genes.Add(gene);
     }
 
-    static public int FindFittestSubject(List<GameObject> newPopulation)
+    static public int FindFittestSubject(List<AgentController> newPopulation)
     {
-        float maxValue = newPopulation[0].GetComponent<AgentController>().distanceFromStart;
+        float maxValue = newPopulation[0].distanceFromStart;
         int maxIndex = 0;
         for (int i = 0; i < newPopulation.Count; i++)
         {
-            if (maxValue < newPopulation[i].GetComponent<AgentController>().distanceFromStart)
+            if (maxValue < newPopulation[i].distanceFromStart)
             {
-                maxValue = newPopulation[i].GetComponent<AgentController>().distanceFromStart;
+                maxValue = newPopulation[i].distanceFromStart;
                 maxIndex = i;
             }
         }
@@ -106,7 +106,7 @@ public class Chromosome
         return maxIndex;
     }
 
-    static private int GetFitIndex(int numbOfChallengers, List<GameObject> currentPopulation, ref int firstIndex)
+    static private int GetFitIndex(int numbOfChallengers, List<AgentController> currentPopulation, ref int firstIndex)
     {
         List<int> tournament = new List<int>();
 
@@ -124,43 +124,43 @@ public class Chromosome
             }
         }
 
-        float maxValue = currentPopulation[tournament[0]].GetComponent<AgentController>().distanceFromStart;
+        float maxValue = currentPopulation[tournament[0]].distanceFromStart;
         int maxIndex = 0;
         for (int i = 0; i < tournament.Count; i++)
         {
-            if (maxValue < currentPopulation[tournament[i]].GetComponent<AgentController>().distanceFromStart)
+            if (maxValue < currentPopulation[tournament[i]].distanceFromStart)
             {
-                maxValue = currentPopulation[tournament[i]].GetComponent<AgentController>().distanceFromStart;
+                maxValue = currentPopulation[tournament[i]].distanceFromStart;
                 maxIndex = tournament[i];
             }
         }
 
         return maxIndex;
     }
-    static public void Selection(ref int fittestIndex, ref int secondFittestIndex, int tourneySelectNumb, List<GameObject> currentPopulation)
+    static public void Selection(ref int fittestIndex, ref int secondFittestIndex, int tourneySelectNumb, List<AgentController> currentPopulation)
     {
         int firstIndex = -1;
         fittestIndex = GetFitIndex(tourneySelectNumb, currentPopulation, ref firstIndex);
         secondFittestIndex = GetFitIndex(tourneySelectNumb, currentPopulation, ref firstIndex);
     }
 
-    static public Chromosome Crossover(List<GameObject> currentPopulation, List<GameObject> newPopulation)
+    static public Chromosome Crossover(List<AgentController> currentPopulation, List<AgentController> newPopulation)
     {
         Chromosome chromosome = new Chromosome();
-        int chromosomeCount1 = currentPopulation[fittestIndex].GetComponent<AgentController>().chromosome.genes.Count;
-        int chromosomeCount2 = currentPopulation[secondFittestIndex].GetComponent<AgentController>().chromosome.genes.Count;
+        int chromosomeCount1 = currentPopulation[fittestIndex].chromosome.genes.Count;
+        int chromosomeCount2 = currentPopulation[secondFittestIndex].chromosome.genes.Count;
         int smallestChromosomeCount = Mathf.Min(chromosomeCount1, chromosomeCount2);
 
         int rand = Random.Range(0, smallestChromosomeCount);
 
         for (int i = 0; i < rand; i++)
         {
-            chromosome.genes.Add(newPopulation[fittestIndex].GetComponent<AgentController>().chromosome.genes[i].DeepClone());
+            chromosome.genes.Add(newPopulation[fittestIndex].chromosome.genes[i].DeepClone());
         }
 
         for (int i = rand; i < chromosomeCount2 - rand; i++)
         {
-            chromosome.genes.Add(newPopulation[secondFittestIndex].GetComponent<AgentController>().chromosome.genes[i].DeepClone());
+            chromosome.genes.Add(newPopulation[secondFittestIndex].chromosome.genes[i].DeepClone());
         }
 
         Mutation(ref chromosome);
@@ -225,7 +225,7 @@ public class Chromosome
         }
     }
 
-    static public void AddToPopulation(List<GameObject> newPopulation, int eliteIndex, Chromosome offspringChromosome)
+    static public void AddToPopulation(List<AgentController> newPopulation, int eliteIndex, Chromosome offspringChromosome)
     {
         int rand = Random.Range(0, newPopulation.Count);
         while (rand == eliteIndex)
@@ -233,26 +233,26 @@ public class Chromosome
             rand = Random.Range(0, newPopulation.Count);
         }
 
-        int chromosomeCount1 = newPopulation[rand].GetComponent<AgentController>().chromosome.genes.Count;
+        int chromosomeCount1 = newPopulation[rand].chromosome.genes.Count;
         int chromosomeCount2 = offspringChromosome.genes.Count;
 
         if (chromosomeCount1 > chromosomeCount2 || chromosomeCount1 == chromosomeCount2)
         {
             for (int i = 0; i < chromosomeCount2; i++)
             {
-                newPopulation[rand].GetComponent<AgentController>().chromosome.genes[i] = offspringChromosome.genes[i];
+                newPopulation[rand].chromosome.genes[i] = offspringChromosome.genes[i];
             }
         }
         else
         {
             for (int i = 0; i < chromosomeCount1; i++)
             {
-                newPopulation[rand].GetComponent<AgentController>().chromosome.genes[i] = offspringChromosome.genes[i];
+                newPopulation[rand].chromosome.genes[i] = offspringChromosome.genes[i];
             }
 
             for (int i = chromosomeCount1; i < chromosomeCount2; i++)
             {
-                newPopulation[rand].GetComponent<AgentController>().chromosome.genes.Add(offspringChromosome.genes[i]);
+                newPopulation[rand].chromosome.genes.Add(offspringChromosome.genes[i]);
             }
         }
     }

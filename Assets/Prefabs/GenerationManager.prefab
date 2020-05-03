@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 863736380792949038}
   - component: {fileID: 863736380792949037}
   - component: {fileID: 1485487517}
+  - component: {fileID: 31319049}
   m_Layer: 0
   m_Name: GenerationManager
   m_TagString: Untagged
@@ -48,8 +49,8 @@ MonoBehaviour:
   populationAmount: 100
   timeScale: 20
   tourneySelectNumb: 3
-  mutationPercentAcrossChromosome: 1
   mutationChanceRate: 0.1
+  mutationPercentAcrossChromosome: 1
   populationStartingPosition: {x: 0, y: 0.5, z: 0}
   popLifeSpan: 0
   currentPopulation: []
@@ -77,3 +78,20 @@ MonoBehaviour:
   key: 0
   pooledObject: {fileID: 4308148704808408173, guid: 4615f57de607d53459018bf1fc60f1fd,
     type: 3}
+--- !u!114 &31319049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 863736380792949036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db31a832ad055b947927907f59a2b1c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentGeneration: {fileID: 0}
+  finalGeneration: {fileID: 0}
+  finalPanel: {fileID: 0}
+  populationTimer: {fileID: 0}
+  populationTimerHeader: {fileID: 0}

@@ -35,9 +35,9 @@ public class GenerationManager : MonoBehaviour
     public float popLifeSpan = 0;
 
     [HideInInspector]
-    public List<GameObject> currentPopulation;
+    public List<AgentController> currentPopulation;
     [HideInInspector]
-    public List<GameObject> newPopulation;
+    public List<AgentController> newPopulation;
 
     [HideInInspector]
     public bool timeLimitReached = false;
@@ -63,6 +63,7 @@ public class GenerationManager : MonoBehaviour
 
     private ObjectPooler.Key agentKey = ObjectPooler.Key.Agent;
     private Chromosome offspringChromosome;
+    private UIManager uim;
 
     void Awake()
     {
@@ -76,8 +77,10 @@ public class GenerationManager : MonoBehaviour
         }
 
         offspringChromosome = new Chromosome();
-        currentPopulation = new List<GameObject>();
+        currentPopulation = new List<AgentController>();
         possibleInputs = new int[] { (int)KeyCode.RightArrow, (int)KeyCode.Space };
+
+        uim = GetComponent<UIManager>();
 
         Time.timeScale = timeScale;
     }
@@ -97,8 +100,10 @@ public class GenerationManager : MonoBehaviour
         {
             timeLimitReached = true;
             NextGeneration();
-            Debug.Log("Time Reached!");
+            uim.UpdateGeneration();
         }
+
+        uim.UpdateTimer();
     }
 
     void InitializePopulation()
@@ -110,7 +115,7 @@ public class GenerationManager : MonoBehaviour
 
             pooledObj.SetActive(true);
 
-            currentPopulation.Add(pooledObj);
+            currentPopulation.Add(pooledObj.GetComponent<AgentController>());
         }
 
         for (int i = 0; i < currentPopulation.Count; i++)
@@ -154,11 +159,11 @@ public class GenerationManager : MonoBehaviour
         }
         newPopulation.Clear();
 
-        foreach (GameObject agent in currentPopulation)
+        foreach (AgentController agent in currentPopulation)
         {
-            agent.SetActive(false);
-            agent.transform.position = populationStartingPosition;
-            agent.SetActive(true);
+            agent.gameObject.SetActive(false);
+            agent.gameObject.transform.position = populationStartingPosition;
+            agent.gameObject.SetActive(true);
         }
 
     }
@@ -171,7 +176,7 @@ public class GenerationManager : MonoBehaviour
         }
         else
         {
-            Debug.Log($"Simulation over! Generation: {currentGeneration}");
+            uim.PostFinalGeneration();
         }
     }
 }
