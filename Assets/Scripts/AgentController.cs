@@ -1,29 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class Gene
+public class AgentController : MonoBehaviour
 {
-
-    public Gene DeepClone()
-    {
-        var clonedObj = new Gene()
-        {
-            inputPairs = new Dictionary<int, bool>(this.inputPairs),
-            pressTime = this.pressTime,
-        };
-
-        return clonedObj;
-    }
-
-    public Dictionary<int, bool> inputPairs;
-    public float pressTime;
-}
-
-public class CubeController : MonoBehaviour
-{
-    [HideInInspector]
-    public List<Gene> chromosome;
+    public Chromosome chromosome;
 
     private int chromosomeIndex = 0;
 
@@ -50,7 +30,7 @@ public class CubeController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         mf = GetComponent<MeshFilter>();
 
-        chromosome = new List<Gene>();
+        chromosome = new Chromosome();
 
         InitializeChromosome();
 
@@ -94,7 +74,7 @@ public class CubeController : MonoBehaviour
         gene.inputPairs = inputPairs;
         gene.pressTime = Random.Range(1, GenerationManager.instance.maxGeneDurationTime);
 
-        chromosome.Add(gene);
+        chromosome.genes.Add(gene);
     }
 
     void AddGene()
@@ -105,7 +85,7 @@ public class CubeController : MonoBehaviour
         inputPairs = new Dictionary<int, bool>();
         foreach (int keyCodes in GenerationManager.instance.possibleInputs)
         {
-            inputPairs[keyCodes] = chromosome[chromosome.Count - 1].inputPairs[keyCodes];
+            inputPairs[keyCodes] = chromosome.genes[chromosome.genes.Count - 1].inputPairs[keyCodes];
 
             if (keyCodes == (int)KeyCode.Space && inputPairs[keyCodes])
             {
@@ -127,7 +107,7 @@ public class CubeController : MonoBehaviour
             Debug.Log("Last Gene added.");
         }
 
-        chromosome.Add(gene);
+        chromosome.genes.Add(gene);
     }
 
     void OnDrawGizmos()
@@ -163,10 +143,9 @@ public class CubeController : MonoBehaviour
     {
         if (!GenerationManager.instance.timeLimitReached && !GenerationManager.instance.goalReached)
         {
-            if (Time.time - timeLimit <= chromosome[chromosomeIndex].pressTime)
+            if (Time.time - timeLimit <= chromosome.genes[chromosomeIndex].pressTime)
             {
                 RunInputs();
-                //Debug.Log(chromosomeIndex);
             }
             else
             {
@@ -176,7 +155,7 @@ public class CubeController : MonoBehaviour
                 }
 
                 timeLimit = Time.time;
-                if (chromosomeIndex + 1 != chromosome.Count)
+                if (chromosomeIndex + 1 != chromosome.genes.Count)
                 {
                     chromosomeIndex++;
                     hasJumped = false;
@@ -189,17 +168,13 @@ public class CubeController : MonoBehaviour
     {
         for (int i = 0; i < GenerationManager.instance.possibleInputs.Length; i++)
         {
-            if (chromosome[chromosomeIndex].inputPairs[GenerationManager.instance.possibleInputs[i]])
+            if (chromosome.genes[chromosomeIndex].inputPairs[GenerationManager.instance.possibleInputs[i]])
             {
                 switch (GenerationManager.instance.possibleInputs[i])
                 {
                     case (int)KeyCode.RightArrow:
                         MoveRight();
                         //print("Right.");
-                        break;
-                    case (int)KeyCode.LeftArrow:
-                        MoveLeft();
-                       // print("Left.");
                         break;
                     case (int)KeyCode.Space:
                         if (isGrounded && !hasJumped)
@@ -223,14 +198,6 @@ public class CubeController : MonoBehaviour
         }
     }
 
-    void MoveLeft()
-    {
-        if (rb.velocity.magnitude < maxSpeed)
-        {
-            Vector3 tempVect = Vector3.left * speed * Time.deltaTime;
-            rb.AddForce(tempVect);
-        }
-    }
 
     void Jump()
     {
