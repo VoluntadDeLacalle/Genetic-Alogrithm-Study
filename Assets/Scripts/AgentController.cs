@@ -23,6 +23,9 @@ public class AgentController : MonoBehaviour
     float overlapSphereRadius = 0;
     private Vector3 overlapSphereColliderPosition = Vector3.zero;
 
+    /// <summary>
+    /// Initializes certain values.
+    /// </summary>
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -36,6 +39,9 @@ public class AgentController : MonoBehaviour
         timeLimit = Time.time;
     }
 
+    /// <summary>
+    /// Resets global variables once the objects are enabled from their object pooling.
+    /// </summary>
     void OnEnable()
     {
         timeLimit = Time.time;
@@ -50,17 +56,27 @@ public class AgentController : MonoBehaviour
         }   
     }
 
+    /// <summary>
+    /// Resets global variables once the objects are disabled.
+    /// </summary>
     void OnDisable()
     {
         distanceFromStart = 0;
     }
 
+    /// <summary>
+    /// Purely for debugging. Draws a wire sphere gizmo that represents the "Jump Collider." More on this in a later function.
+    /// </summary>
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(overlapSphereColliderPosition, overlapSphereRadius);
     }
 
+    /// <summary>
+    /// Gets the absolute distance from the population's starting point to where the agent is every frame. This distance
+    /// is later used as a scale of fitness for the population.
+    /// </summary>
     void Update()
     {
         float distanceCheck = Mathf.Abs(Vector3.Distance(transform.position, GenerationManager.instance.populationStartingPosition));
@@ -70,12 +86,19 @@ public class AgentController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Fixed update for more accurate physics calculations.
+    /// </summary>
     void FixedUpdate()
     {
         CheckIsGrounded();
         CheckInputTimes();
     }
 
+    /// <summary>
+    /// Uses the "Jump Collider" overlap sphere mentioned above to detect if the bottom of the sphere is colliding with a ground
+    /// of some kind. If it is, then the agent is allowed to jump.
+    /// </summary>
     void CheckIsGrounded()
     {
         overlapSphereColliderPosition = transform.position - new Vector3(0, 0.1f, 0);
@@ -84,6 +107,10 @@ public class AgentController : MonoBehaviour
         isGrounded = overLapColliders.Length > 0;
     }
 
+    /// <summary>
+    /// Each input has a duration time in the genes of the agent's chromosome. This function runs every input for its allotted
+    /// duration time.
+    /// </summary>
     void CheckInputTimes()
     {
         if (!GenerationManager.instance.timeLimitReached && !GenerationManager.instance.goalReached)
@@ -109,6 +136,10 @@ public class AgentController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This function retrieves the current active inputs from the agent's genes and
+    /// calls the respective functions below.
+    /// </summary>
     void RunInputs()
     {
         for (int i = 0; i < GenerationManager.instance.possibleInputs.Length; i++)
@@ -132,6 +163,9 @@ public class AgentController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Applies a force to the right of the agent, allowing it to move right.
+    /// </summary>
     void MoveRight()
     {
         if (rb.velocity.magnitude < maxSpeed)
@@ -141,12 +175,18 @@ public class AgentController : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// Applies an impulse force to the agent upward, effectively allowing the agent to jump.
+    /// </summary>
     void Jump()
     {
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
 
+    /// <summary>
+    /// This function is called every time the agent collides with a trigger collider. If the collider belongs to the goal,
+    /// the GenerationManager is notified and the simulation ends.
+    /// </summary>
     void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Goal")

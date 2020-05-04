@@ -5,7 +5,7 @@ public class GenerationManager : MonoBehaviour
 {
     public static GenerationManager instance = null;
 
-    [Tooltip("Current Population's Life Span in Minutes")]
+    [Tooltip("Current Population's life span in Minutes")]
     [Range(1, 5)]
     public float popLifeSpanInMin = 0;
     [Tooltip("The current Population size")]
@@ -14,10 +14,10 @@ public class GenerationManager : MonoBehaviour
 
     [Tooltip("Scales the time of the program\n\n" +
              "Ex. timeScale = 2 -> 2x faster\n\n" +
-             "WARNING: A high time scale and big population may lag the renderering of the program")]
+             "WARNING: A high time scale and big population may lag the rendering of the program")]
     [Range(1, 20)]
     public float timeScale = 1;
-    [Tooltip("Determines the amount of contestants allowed to be tried in the Tourney Selection")]
+    [Tooltip("Determines the amount of contestants allowed to be tried in the Tournament Selection")]
     [Range(3, 6)]
     public int tourneySelectNumb = 3;
 
@@ -51,8 +51,6 @@ public class GenerationManager : MonoBehaviour
     [HideInInspector]
     public int secondFittestIndex = 0;
     [HideInInspector]
-    public int leastFittestIndex = 0;
-    [HideInInspector]
     private int eliteIndex = 0;
 
     [HideInInspector]
@@ -65,6 +63,9 @@ public class GenerationManager : MonoBehaviour
     private Chromosome offspringChromosome;
     private UIManager uim;
 
+    /// <summary>
+    /// Initializes the GenerationManager object and makes it a singleton.
+    /// </summary>
     void Awake()
     {
         if (instance == null)
@@ -84,7 +85,10 @@ public class GenerationManager : MonoBehaviour
 
         Time.timeScale = timeScale;
     }
-
+    
+    /// <summary>
+    /// Converts the population life span from minutes to seconds and initializes the first generation's population.
+    /// </summary>
     void Start()
     {
         popLifeSpan = popLifeSpanInMin * 60;
@@ -92,6 +96,10 @@ public class GenerationManager : MonoBehaviour
         InitializePopulation();
     }
 
+    /// <summary>
+    /// A void function that counts down the population's life span every second. One the life span hits zero, the
+    /// next generation is formed and the next population is set back to the start position.
+    /// </summary>
     void DecreaseTimer()
     {
         popLifeSpan -= Time.deltaTime;
@@ -106,6 +114,11 @@ public class GenerationManager : MonoBehaviour
         uim.UpdateTimer();
     }
 
+    /// <summary>
+    /// Creates agent prefabs and object pools them for later uses in future generations. Once all the desired
+    /// agents are created, they have the collisions between themselves ignored for the life of the simulation.
+    /// This is only run for the initial population.
+    /// </summary>
     void InitializePopulation()
     {
         for (int i = 0; i < populationAmount; i++)
@@ -127,6 +140,12 @@ public class GenerationManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Runs all the static functions of the Chromosome class and sets up the current population to equal
+    /// the new, or next, population for the next generation. Also resets the population life span and the
+    /// indices chosen for Selection or Elitism. Finally, the current population is sent back to the starting
+    /// position for the next generation.
+    /// </summary>
     void NextGeneration()
     {
         newPopulation.Clear();
@@ -145,7 +164,6 @@ public class GenerationManager : MonoBehaviour
 
             fittestIndex = 0;
             secondFittestIndex = 0;
-            leastFittestIndex = 0;
         }
 
         fittestIndex = 0;
@@ -168,6 +186,9 @@ public class GenerationManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Decreases the population life span and checks to see if the goal has been reached.
+    /// </summary>
     void Update()
     {
         if (!goalReached)

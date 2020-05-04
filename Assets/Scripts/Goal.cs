@@ -1,5 +1,10 @@
 ﻿using UnityEngine;
 
+
+/// <summary>
+/// This script updates the goal at the end of the simulation and
+/// makes it transparent.
+/// </summary>
 public class Goal : MonoBehaviour
 {
     public Color reachedColor;
