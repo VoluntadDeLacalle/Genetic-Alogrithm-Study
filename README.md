@@ -15,7 +15,7 @@ One of the first things I learned is that there are many implementations of gene
 #### DoublePoint
 I first tried double point, which takes chooses two random points to place in both parent's (A & B) chromosomes to be a divider for how the genes are crossed-over into the offspring's chromosome.
 
-    picture
+    ![Double Point Picture]()
 
 Double Point crossover never seemed to produce fast results, if they ever would. A sidebar, I also didn't have an element of Elitism implemented at this point, so the generations would always backtrack, so I originally assumed this was due to crossover. 
 
