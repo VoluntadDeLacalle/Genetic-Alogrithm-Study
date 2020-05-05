@@ -16,7 +16,7 @@ A chromosome in genetic algorithm terms is a list of genes. Each gene will conta
 The concept of crossover comes from the biology term of the same name. It is when two chromosomes, in our case the two selected chromosomes from the current population, pass their genes on to an Offspring chromosome. This Offspring chromosome will be a combination of the two parents, and how it is combined is described below.
 
 #### DoublePoint
-I first tried double point, which takes chooses two random points to place in both parent's (A & B) chromosomes to be dividers. Usually Parent A will crossover the first section of its genes, then Parent B will crossover for the middle portion, and finally Parent A will crossover the last of its genes for the final portion. If done correctly, the offspring chromosome should be divided into three sections; two thirds Parent A, one third Parent B.
+I first tried double point, which chooses two random points to place in both parent's (A & B) chromosomes to be dividers. Usually Parent A will crossover the first section of its genes, then Parent B will crossover for the middle portion, and finally Parent A will crossover the last of its genes for the final portion. If done correctly, the offspring chromosome should be divided into three sections; two thirds Parent A, one third Parent B.
 
 ![Double Point Picture](https://github.com/VoluntadDeLacalle/Genetic-Alogrithm-Study/blob/master/Images/DoublePoint.png?raw=true)
 
